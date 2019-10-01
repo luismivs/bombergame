@@ -26,6 +26,23 @@ function Juego(){
 			this.partidas[nombrePartida].agregarJugador(this.usuarios[nick]);
 		}
 	}
+
+
+	this.salir=function(nombrePartida,nick){
+		this.partidas[nombrePartida].salir(nick);
+		if(comprobarJugadores(nombrePartida)==0){
+			this.eliminarPartida(nombrePartida);
+		}
+	}
+
+	this.comprobarJugadores=function(nombrePartida){
+		return Object.keys(this.partida[nombrePartida].jugadores).length;
+	}
+
+	this.eliminarPartida=function(nombrePartida){
+		delete this.partidas[nombrePartida];
+	}
+
 }
 
 function Partida(nombre,idp){
@@ -40,7 +57,7 @@ function Partida(nombre,idp){
 		this.jugadores[usr.nick]=usr;
 	}
 	this.salir=function(nick){
-		this.jugadores[nick]=undefined;
+		delete this.jugadores[nick];
 	}
 
 }
