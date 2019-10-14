@@ -1,30 +1,40 @@
 
 function Juego(){
-	this.partidas=[];
-	this.usuarios=[];
+	this.partidas={};
+	this.usuarios={};
 
-	this.crearPartida=function(nombre,nick){
+	this.crearPartida=function(nombre,nick,callback){
 		var idp=nombre+nick;
 		if(!this.partidas[idp]){
 			this.partidas[idp]=new Partida(nombre,idp);
 			this.partidas[idp].agregarJugador(this.usuarios[nick]);
 		}
+		callback(this.partidas[idp]);
 	}
 
-	this.agregarUsuario=function(nombre){
+	this.agregarUsuario=function(nombre, callback){
 		if (!this.usuarios[nombre]){
+			console.log("Nuevo usuario: "+nombre);
 			this.usuarios[nombre]=new Usuario(nombre);
 		}
+		callback(this.usuarios[nombre]);
 	}
 
-	this.obtenerPartidas=function(){
-		return this.partidas;
+	this.obtenerPartidas=function(callback){
+		//return this.partidas;
+		callback(this.partidas);
 	}
 
-	this.unirAPartida=function(nombrePartida, nick){
+	this.obtenerUsuarios=function(callback){
+		//return this.partidas;
+		callback(this.usuarios);
+	}
+
+	this.unirAPartida=function(nombrePartida, nick, callback){
 		if(this.partidas[nombrePartida] && this.usuarios[nick]){
 			this.partidas[nombrePartida].agregarJugador(this.usuarios[nick]);
 		}
+		callback(this.partidas[nombrePartida].jugadores);
 	}
 
 
@@ -39,6 +49,13 @@ function Juego(){
 		return Object.keys(this.partida[nombrePartida].jugadores).length;
 	}
 
+	this.obtenerJugadores=function(nombrePartida,callback){
+		if(this.partidas[nombrePartida]){
+			callback(this.partidas[nombrePartida].jugadores);
+		}
+	}
+
+
 	this.eliminarPartida=function(nombrePartida){
 		delete this.partidas[nombrePartida];
 	}
@@ -48,7 +65,7 @@ function Juego(){
 function Partida(nombre,idp){
 	this.nombre=nombre;
 	this.idp=idp;
-	this.jugadores=[];
+	this.jugadores={};
 	this.fase=new Inicial();	
 	this.agregarJugador=function(usr){
 		this.fase.agregarJugador(usr,this);
@@ -89,3 +106,6 @@ function Usuario(nick){
 	this.nick=nick;
 	this.id=undefined;
 }
+
+
+module.exports.Juego=Juego;
